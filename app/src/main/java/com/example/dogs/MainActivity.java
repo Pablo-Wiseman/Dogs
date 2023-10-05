@@ -1,14 +1,15 @@
 package com.example.dogs;
 
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.os.Bundle;
 import android.util.Log;
+
+import androidx.appcompat.app.AppCompatActivity;
+
+import org.json.JSONObject;
 
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.net.MalformedURLException;
 import java.net.URL;
 
 import javax.net.ssl.HttpsURLConnection;
@@ -45,7 +46,13 @@ public class MainActivity extends AppCompatActivity {
                        }
                     } while (result != null);
 
-                    Log.d("mainActivity", data.toString());
+                    JSONObject jsonObject = new JSONObject(data.toString());
+                    String message = jsonObject.getString("message");
+                    String status = jsonObject.getString("status");
+
+                    DogImage dogImage = new DogImage(message, status);
+
+                    Log.d("MainActivity", dogImage.toString());
                 } catch (Exception e) {
                     Log.d("MainActivity", e.toString());
                 }
