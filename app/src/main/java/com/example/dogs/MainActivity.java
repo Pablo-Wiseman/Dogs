@@ -4,6 +4,8 @@ import android.os.Bundle;
 import android.util.Log;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProvider;
 
 import org.json.JSONObject;
 
@@ -15,49 +17,25 @@ import java.net.URL;
 import javax.net.ssl.HttpsURLConnection;
 
 public class MainActivity extends AppCompatActivity {
-
-    private static final String BASE_URL = "https://dog.ceo/api/breeds/image/random";
+    private MainViewModel viewModel;
+    private static final String TAG = "MainActivity";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        loadDogImage();
-    }
 
-
-    private void loadDogImage() {
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    URL url = new URL(BASE_URL);
-                    HttpsURLConnection urlConnection = (HttpsURLConnection) url.openConnection();
-                    InputStream inputStream = urlConnection.getInputStream();
-                    InputStreamReader inputStreamReader = new InputStreamReader(inputStream);
-                    BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
-
-                    StringBuilder data = new StringBuilder();
-                    String result;
-                    do {
-                       result =  bufferedReader.readLine();
-                       if (result !=null) {
-                           data.append(result);
-                       }
-                    } while (result != null);
-
-                    JSONObject jsonObject = new JSONObject(data.toString());
-                    String message = jsonObject.getString("message");
-                    String status = jsonObject.getString("status");
-
-                    DogImage dogImage = new DogImage(message, status);
-
-                    Log.d("MainActivity", dogImage.toString());
-                } catch (Exception e) {
-                    Log.d("MainActivity", e.toString());
-                }
-            }
-        }).start();
+      viewModel = new ViewModelProvider(this).get(MainViewModel.class);
+      viewModel.loadDogImage();
+      viewModel.getDogImage().observe(this, new Observer<DogImage>() {
+          @Override
+          public void onChanged(DogImage dogImage) {
+              Log.d(TAG, dogImage.toString());
+          }
+      });
 
     }
+
+
+
 }
