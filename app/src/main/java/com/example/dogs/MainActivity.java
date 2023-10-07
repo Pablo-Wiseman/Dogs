@@ -10,6 +10,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
+import com.bumptech.glide.Glide;
+
 import org.json.JSONObject;
 
 import java.io.BufferedReader;
@@ -37,7 +39,10 @@ public class MainActivity extends AppCompatActivity {
       viewModel.getDogImage().observe(this, new Observer<DogImage>() {
           @Override
           public void onChanged(DogImage dogImage) {
-              Log.d(TAG, dogImage.toString());
+
+              Glide.with(MainActivity.this)
+                      .load(dogImage.getMessage())
+                      .into(imageViewDogImage);
           }
       });
 
