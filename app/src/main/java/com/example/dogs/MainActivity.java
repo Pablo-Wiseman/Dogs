@@ -2,6 +2,7 @@ package com.example.dogs;
 
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
@@ -34,26 +35,43 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         initViews();
 
-      viewModel = new ViewModelProvider(this).get(MainViewModel.class);
-      viewModel.loadDogImage();
-      viewModel.getDogImage().observe(this, new Observer<DogImage>() {
-          @Override
-          public void onChanged(DogImage dogImage) {
+        viewModel = new ViewModelProvider(this).get(MainViewModel.class);
+        viewModel.loadDogImage();
+        viewModel.getIsLoading().observe(this, new Observer<Boolean>() {
+            @Override
+            public void onChanged(Boolean loading) {
+                if (loading) {
+                    progressBar.setVisibility(View.VISIBLE);
+                } else {
+                    progressBar.setVisibility(View.GONE);
+                }
+            }
+        });
+        viewModel.getDogImage().observe(this, new Observer<DogImage>() {
+            @Override
+            public void onChanged(DogImage dogImage) {
 
-              Glide.with(MainActivity.this)
-                      .load(dogImage.getMessage())
-                      .into(imageViewDogImage);
-          }
-      });
+                Glide.with(MainActivity.this)
+                        .load(dogImage.getMessage())
+                        .into(imageViewDogImage);
+            }
+        });
+
+        buttonChangeImage.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                viewModel.loadDogImage();
+            }
+        });
 
     }
 
-    private void initViews(){
+
+    private void initViews() {
         imageViewDogImage = findViewById(R.id.imageViewDogImage);
         buttonChangeImage = findViewById(R.id.buttonChangeImage);
         progressBar = findViewById(R.id.progressBar);
     }
-
 
 
 }
