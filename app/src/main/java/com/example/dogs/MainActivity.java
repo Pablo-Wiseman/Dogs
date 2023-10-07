@@ -6,6 +6,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.Observer;
@@ -37,6 +38,19 @@ public class MainActivity extends AppCompatActivity {
 
         viewModel = new ViewModelProvider(this).get(MainViewModel.class);
         viewModel.loadDogImage();
+        viewModel.getIsError().observe(this, new Observer<Boolean>() {
+            @Override
+            public void onChanged(Boolean isError) {
+                if (isError){
+                    Toast.makeText(
+                                    MainActivity.this,
+                                    R.string.internet_access_denied,
+                                    Toast.LENGTH_SHORT)
+                            .show();
+                }
+
+            }
+        });
         viewModel.getIsLoading().observe(this, new Observer<Boolean>() {
             @Override
             public void onChanged(Boolean loading) {
