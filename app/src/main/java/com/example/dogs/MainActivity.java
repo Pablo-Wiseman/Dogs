@@ -18,6 +18,7 @@ import javax.net.ssl.HttpsURLConnection;
 
 public class MainActivity extends AppCompatActivity {
     private MainViewModel viewModel;
+    private static final String TAG = "MainActivity";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -29,7 +30,7 @@ public class MainActivity extends AppCompatActivity {
       viewModel.getDogImage().observe(this, new Observer<DogImage>() {
           @Override
           public void onChanged(DogImage dogImage) {
-
+              Log.d(TAG, dogImage.toString());
           }
       });
 
